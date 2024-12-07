@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Air Quality Visualization</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <h1>Air Quality Visualization</h1>
+  <canvas id="chart" width="400" height="200"></canvas>
+  <script>
+    async function fetchData() {
+      const response = await fetch('https://api.thingspeak.com/channels/Q23MFJL9SCLG4H0N/fields/1.json?results=10');
+      const data = await response.json();
+
+      // Extract data
+      const labels = data.feeds.map(feed => feed.created_at);
+      const values = data.feeds.map(feed => feed.field1);
+
+      // Plot data with Chart.js
+      new Chart(document.getElementById('chart'), {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Air Quality (Field 1)',
+            data: values,
+            borderColor: 'blue',
+            fill: false,
+          }]
+        }
+      });
+    }
+
+    fetchData();
+  </script>
+</body>
+</html>
